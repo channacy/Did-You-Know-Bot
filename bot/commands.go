@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -81,9 +80,17 @@ type GameOfThronesData struct {
 	Character Character `json:"character"`
 }
 
+type CatImg struct {
+	Id     string `json:"id"`
+	Url    string `json:"url"`
+	Width  int16  `json:"width"`
+	Height int16  `json:"height"`
+}
+
 type LucifierData []BasicQuote
 type StrangerThingsData []BasicQuote
 type SouthParkData []SouthParkQuote
+type CatImgData []CatImg
 
 type Joke struct {
 	Type      string `json:"type"`
@@ -96,6 +103,7 @@ const adviceApiUrl string = "https://api.adviceslip.com/advice"
 const catFactApiUrl string = "https://catfact.ninja/fact"
 const dogFactApiUrl string = "https://dogapi.dog/api/v2/facts"
 const dogImgApiUrl string = "https://dog.ceo/api/breeds/image/random"
+const catImgApiUrl string = "https://api.thecatapi.com/v1/images/search"
 const mathFactApiUrl string = "http://numbersapi.com/random/math"
 const quoteApiUrl string = "http://api.quotable.io/random"
 const breakingBadQuoteApiUrl string = "https://api.breakingbadquotes.xyz/v1/quotes"
@@ -171,7 +179,7 @@ func getDogFact(message string) *discordgo.MessageSend {
 	}
 
 	// Open HTTP response body
-	body, _ := ioutil.ReadAll(response.Body)
+	body, _ := io.ReadAll(response.Body)
 	defer response.Body.Close()
 
 	// Convert JSON
@@ -483,5 +491,34 @@ func getJoke(message string) *discordgo.MessageSend {
 					Inline: true,
 				},
 			}}}}
+	return embed
+}
+
+func getCatImg(message string) *discordgo.MessageSend {
+	client := http.Client{Timeout: 5 * time.Second}
+	response, err := client.Get(catImgApiUrl)
+	if err != nil {
+		return &discordgo.MessageSend{
+			Content: "Sorry, there was an error trying to get a joke.",
+		}
+	}
+
+	// Open HTTP response body
+	body, _ := io.ReadAll(response.Body)
+	defer response.Body.Close()
+
+	// Convert JSON
+	var data CatImgData
+	json.Unmarshal([]byte(body), &data)
+
+	catImgUrl := data[0].Url
+	embed := &discordgo.MessageSend{
+		Embeds: []*discordgo.MessageEmbed{{
+			Type:  discordgo.EmbedTypeRich,
+			Title: "Cat Image",
+			Image: &discordgo.MessageEmbedImage{
+				URL: catImgUrl,
+			},
+		}}}
 	return embed
 }

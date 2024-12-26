@@ -59,10 +59,18 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	case strings.Contains(message.Content, "!j"):
 		joke := getJoke(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, joke)
+	// Get Cat Image
+	case strings.Contains(message.Content, "!cat pic"):
+		catImg := getCatImg(message.Content)
+		discord.ChannelMessageSendComplex(message.ChannelID, catImg)
 	// Get cat fact
 	case strings.Contains(message.Content, "!cat"):
 		catFact := getCatFact(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, catFact)
+	// Get dog picture
+	case strings.Contains(message.Content, "!dog pic"):
+		dogImg := getDogImg(message.Content)
+		discord.ChannelMessageSendComplex(message.ChannelID, dogImg)
 	// Get dog fact
 	case strings.Contains(message.Content, "!dog"):
 		dogFact := getDogFact(message.Content)
@@ -95,10 +103,6 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	case strings.Contains(message.Content, "!q"):
 		quote := getQuote(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
-	// Get dog picture
-	case strings.Contains(message.Content, "!dog pic"):
-		dogImg := getDogImg(message.Content)
-		discord.ChannelMessageSendComplex(message.ChannelID, dogImg)
 	// Get basic hi
 	case strings.Contains(message.Content, "!help") || strings.Contains(message.Content, "!h"):
 		embed := &discordgo.MessageSend{
