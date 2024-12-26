@@ -42,12 +42,17 @@ type DogFactData struct {
 	Data []DogFact `json:"data"`
 }
 
-type BreakingBadQuote struct {
+type BasicQuote struct {
 	Quote  string `json:"quote"`
 	Author string `json:"author"`
 }
 
-type BreakingBadData []BreakingBadQuote
+type SouthParkQuote struct {
+	Quote     string `json:"quote"`
+	Character string `json:"character"`
+}
+
+type BreakingBadData []BasicQuote
 
 type Quote struct {
 	ID           string   `json:"id"`
@@ -60,6 +65,33 @@ type Quote struct {
 	DateModified string   `json:"dateModified"`
 }
 
+type House struct {
+	Name string `json:"name"`
+	Slug string `json:"slug"`
+}
+
+type Character struct {
+	Name  string `json:"name"`
+	Slug  string `json:"slug"`
+	House House  `json:"house"`
+}
+
+type GameOfThronesData struct {
+	Sentence  string    `json:"sentence"`
+	Character Character `json:"character"`
+}
+
+type LucifierData []BasicQuote
+type StrangerThingsData []BasicQuote
+type SouthParkData []SouthParkQuote
+
+type Joke struct {
+	Type      string `json:"type"`
+	Setup     string `json:"setup"`
+	Punchline string `json:"punchline"`
+	Id        string `json:"id"`
+}
+
 const adviceApiUrl string = "https://api.adviceslip.com/advice"
 const catFactApiUrl string = "https://catfact.ninja/fact"
 const dogFactApiUrl string = "https://dogapi.dog/api/v2/facts"
@@ -69,8 +101,9 @@ const quoteApiUrl string = "http://api.quotable.io/random"
 const breakingBadQuoteApiUrl string = "https://api.breakingbadquotes.xyz/v1/quotes"
 const gameOfThronesQuoteApiUrl string = "https://api.gameofthronesquotes.xyz/v1/random"
 const luciferQuoteApiUrl string = "https://luciferquotes.shadowdev.xyz/api/quotes"
-const southParkQuoteApiUrl string = "https://southparkquotes.onrender.com/v1/quotes"
+const southParkQuoteApiUrl string = "http://southparkquotes.onrender.com/v1/quotes"
 const strangerThingsQuoteApiUrl string = "https://strangerthings-quotes.vercel.app/api/quotes"
+const jokeApiUrl string = "https://official-joke-api.appspot.com/jokes/random"
 
 func getAdvice(message string) *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
@@ -271,12 +304,182 @@ func getBreakingBadQuote(message string) *discordgo.MessageSend {
 	embed := &discordgo.MessageSend{
 		Embeds: []*discordgo.MessageEmbed{{
 			Type:        discordgo.EmbedTypeRich,
-			Title:       "Quote",
+			Title:       "Breaking Bad",
 			Description: quote,
 			Fields: []*discordgo.MessageEmbedField{
 				{
-					Name:   "Author",
+					Name:   "Character",
 					Value:  author,
+					Inline: true,
+				},
+			}}}}
+	return embed
+}
+
+func getGameOfThronesQuote(message string) *discordgo.MessageSend {
+	client := http.Client{Timeout: 5 * time.Second}
+	response, err := client.Get(gameOfThronesQuoteApiUrl)
+	if err != nil {
+		return &discordgo.MessageSend{
+			Content: "Sorry, there was an error trying to get a Game of Thrones Quote.",
+		}
+	}
+
+	// Open HTTP response body
+	body, _ := io.ReadAll(response.Body)
+	defer response.Body.Close()
+
+	// Convert JSON
+	var data GameOfThronesData
+	json.Unmarshal([]byte(body), &data)
+
+	quote := data.Sentence
+	author := data.Character.Name
+	embed := &discordgo.MessageSend{
+		Embeds: []*discordgo.MessageEmbed{{
+			Type:        discordgo.EmbedTypeRich,
+			Title:       "Game of Thrones Quote",
+			Description: quote,
+			Fields: []*discordgo.MessageEmbedField{
+				{
+					Name:   "Character",
+					Value:  author,
+					Inline: true,
+				},
+			}}}}
+	return embed
+}
+
+func getLucifierQuote(message string) *discordgo.MessageSend {
+	client := http.Client{Timeout: 5 * time.Second}
+	response, err := client.Get(luciferQuoteApiUrl)
+	if err != nil {
+		return &discordgo.MessageSend{
+			Content: "Sorry, there was an error trying to get a Lucifier Quote.",
+		}
+	}
+
+	// Open HTTP response body
+	body, _ := io.ReadAll(response.Body)
+	defer response.Body.Close()
+
+	// Convert JSON
+	var data LucifierData
+	json.Unmarshal([]byte(body), &data)
+
+	quote := data[0].Quote
+	author := data[0].Author
+	embed := &discordgo.MessageSend{
+		Embeds: []*discordgo.MessageEmbed{{
+			Type:        discordgo.EmbedTypeRich,
+			Title:       "Lucifier Quote",
+			Description: quote,
+			Fields: []*discordgo.MessageEmbedField{
+				{
+					Name:   "Character",
+					Value:  author,
+					Inline: true,
+				},
+			}}}}
+	return embed
+}
+
+func getStrangerThingsQuote(message string) *discordgo.MessageSend {
+	client := http.Client{Timeout: 5 * time.Second}
+	response, err := client.Get(strangerThingsQuoteApiUrl)
+	if err != nil {
+		return &discordgo.MessageSend{
+			Content: "Sorry, there was an error trying to get a Stranger Things quote.",
+		}
+	}
+
+	// Open HTTP response body
+	body, _ := io.ReadAll(response.Body)
+	defer response.Body.Close()
+
+	// Convert JSON
+	var data StrangerThingsData
+	json.Unmarshal([]byte(body), &data)
+
+	quote := data[0].Quote
+	author := data[0].Author
+	embed := &discordgo.MessageSend{
+		Embeds: []*discordgo.MessageEmbed{{
+			Type:        discordgo.EmbedTypeRich,
+			Title:       "Stranger Things Quote",
+			Description: quote,
+			Fields: []*discordgo.MessageEmbedField{
+				{
+					Name:   "Character",
+					Value:  author,
+					Inline: true,
+				},
+			}}}}
+	return embed
+}
+
+func getSouthParkQuote(message string) *discordgo.MessageSend {
+	client := http.Client{Timeout: 5 * time.Second}
+	response, err := client.Get(southParkQuoteApiUrl)
+	if err != nil {
+		return &discordgo.MessageSend{
+			Content: "Sorry, there was an error trying to get a South Park quote.",
+		}
+	}
+
+	// Open HTTP response body
+	body, _ := io.ReadAll(response.Body)
+	defer response.Body.Close()
+
+	// Convert JSON
+	var data SouthParkData
+	json.Unmarshal([]byte(body), &data)
+
+	quote := data[0].Quote
+	character := data[0].Character
+	embed := &discordgo.MessageSend{
+		Embeds: []*discordgo.MessageEmbed{{
+			Type:        discordgo.EmbedTypeRich,
+			Title:       "South Park Quote",
+			Description: quote,
+			Fields: []*discordgo.MessageEmbedField{
+				{
+					Name:   "Character",
+					Value:  character,
+					Inline: true,
+				},
+			}}}}
+	return embed
+}
+
+func getJoke(message string) *discordgo.MessageSend {
+	client := http.Client{Timeout: 5 * time.Second}
+	response, err := client.Get(jokeApiUrl)
+	if err != nil {
+		return &discordgo.MessageSend{
+			Content: "Sorry, there was an error trying to get a joke.",
+		}
+	}
+
+	// Open HTTP response body
+	body, _ := io.ReadAll(response.Body)
+	defer response.Body.Close()
+
+	// Convert JSON
+	var data Joke
+	json.Unmarshal([]byte(body), &data)
+
+	setup := data.Setup
+	punchline := data.Punchline
+	embed := &discordgo.MessageSend{
+		Embeds: []*discordgo.MessageEmbed{{
+			Type:        discordgo.EmbedTypeRich,
+			Title:       "Joke",
+			Description: setup,
+			Fields: []*discordgo.MessageEmbedField{
+				{
+					Name:   "Punchline",
+					Value:  punchline,
 					Inline: true,
 				},
 			}}}}
