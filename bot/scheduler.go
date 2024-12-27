@@ -11,6 +11,12 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+type Schedule struct {
+	ChannelID   string
+	MessageType string
+	Time        string
+}
+
 var rdb *redis.Client
 var ctx context.Context
 
@@ -34,48 +40,54 @@ func redis_client_connect_basic() {
 	if err != nil {
 		fmt.Println(response)
 	}
-
-	// rdb.Set(ctx, "foo", "bar", 0)
-	// result, err := rdb.Get(ctx, "foo").Result()
-
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// fmt.Println(result) // >>> bar
 }
 
-// key: channel ID, value is server ID, time frequency, at which time, message type (whether it is quote, joke, or advice)
-// function that sets the server schedule
-// test cases
-func setServerSchedule(guildId string, channelId string, timeInterval string, messageType string, isOn bool) {
+func setServerSchedule(guildId string, channelId string, timeInterval string, messageType string, timeString string, isOn bool) {
 	redis_client_connect_basic()
-	currentTime := time.Now()
-	formattedTime := currentTime.Format("15:04:05")
+	key := channelId + timeInterval + messageType
+	format := "15:04"
+	formattedTime, err := time.Parse(format, timeString)
+	if err != nil {
+		fmt.Println("Error:", err)
+	} else {
+		fmt.Println("Parsed time:", formattedTime)
+	}
 	data := map[string]any{
+		"channelId":    channelId,
 		"guildId":      guildId,
 		"messageType":  messageType,
 		"timeInterval": timeInterval,
 		"time":         formattedTime,
-		"isOn":         true,
 	}
 	serialized, err := json.Marshal(data)
 	if err != nil {
 		panic(err)
 	}
 
-	err = rdb.Set(ctx, channelId, serialized, 0).Err()
+	err = rdb.Set(ctx, key, serialized, 0).Err()
 
 	if err != nil {
 		panic(err)
 	}
 
-	val, err := rdb.Get(ctx, channelId).Result()
+	val, err := rdb.Get(ctx, key).Result()
 	if err != nil {
 		panic(err)
 	}
 
 	var deserialized []interface{}
 	json.Unmarshal([]byte(val), &deserialized)
-	fmt.Println(deserialized)
+	fmt.Println("Key: ", key)
+	fmt.Println("Value: ", val)
+}
+
+func deleteServerSchedule(key string) {
+	redis_client_connect_basic()
+	deleted, err := rdb.Del(ctx, key).Result()
+	if err != nil {
+		log.Println(err)
+	} else {
+		fmt.Println("Key: ", key)
+		fmt.Println("Deleted key-value pair ", deleted)
+	}
 }

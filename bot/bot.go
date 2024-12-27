@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -78,10 +79,20 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	case message.Content == "!math":
 		mathFact := getMathFact(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, mathFact)
+		// Delete schedule for daily quote
+	case message.Content == "!q daily delete":
+		key := message.ChannelID + "dailyquote"
+		deleteServerSchedule(key)
+		discord.ChannelMessageSend(message.ChannelID, "Succesfully removed scheduled daily quote.")
 	// Get quote daily
-	case message.Content == "!q daily":
-		setServerSchedule(message.GuildID, message.ChannelID, "daily", "quote", true)
-		discord.ChannelMessageSend(message.ChannelID, "Insertion Succesful.")
+	case strings.Contains(message.Content, "!q daily"):
+		words := strings.Fields(message.Content)
+		if len(words) < 3 {
+			discord.ChannelMessageSend(message.ChannelID, "Could not set daily message. Example usage: !q daily 5:00.")
+		} else {
+			setServerSchedule(message.GuildID, message.ChannelID, "daily", "quote", words[2], true)
+			discord.ChannelMessageSend(message.ChannelID, "All times will be set based on EST. Message scheduling was succesful.")
+		}
 	// Get Breaking Bad Quote
 	case message.Content == "!q bb":
 		quote := getBreakingBadQuote(message.Content)
