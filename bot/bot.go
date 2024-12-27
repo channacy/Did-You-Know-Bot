@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -52,59 +51,63 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	// Respond to messages
 	switch {
 	// Get advice
-	case strings.Contains(message.Content, "!a"):
+	case message.Content == "!a":
 		advice := getAdvice(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, advice)
 	// Get advice
-	case strings.Contains(message.Content, "!j"):
+	case message.Content == "!j":
 		joke := getJoke(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, joke)
 	// Get Cat Image
-	case strings.Contains(message.Content, "!cat pic"):
+	case message.Content == "!cat pic":
 		catImg := getCatImg(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, catImg)
 	// Get cat fact
-	case strings.Contains(message.Content, "!cat"):
+	case message.Content == "!cat":
 		catFact := getCatFact(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, catFact)
 	// Get dog picture
-	case strings.Contains(message.Content, "!dog pic"):
+	case message.Content == "!dog pic":
 		dogImg := getDogImg(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, dogImg)
 	// Get dog fact
-	case strings.Contains(message.Content, "!dog"):
+	case message.Content == "!dog":
 		dogFact := getDogFact(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, dogFact)
 	// Get math fact
-	case strings.Contains(message.Content, "!math"):
+	case message.Content == "!math":
 		mathFact := getMathFact(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, mathFact)
+	// Get quote daily
+	case message.Content == "!q daily":
+		setServerSchedule(message.GuildID, message.ChannelID, "daily", "quote", true)
+		discord.ChannelMessageSend(message.ChannelID, "Insertion Succesful.")
 	// Get Breaking Bad Quote
-	case strings.Contains(message.Content, "!q bb"):
+	case message.Content == "!q bb":
 		quote := getBreakingBadQuote(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
 	// Get Game of Thrones quote
-	case strings.Contains(message.Content, "!q got"):
+	case message.Content == "!q got":
 		quote := getGameOfThronesQuote(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
 	// Get Lucifier quote
-	case strings.Contains(message.Content, "!q lucifier"):
+	case message.Content == "!q lucifier":
 		quote := getLucifierQuote(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
 	// Get Stranger Things quote
-	case strings.Contains(message.Content, "!q stranger"):
+	case message.Content == "!q stranger":
 		quote := getStrangerThingsQuote(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
 	// Get South Park quote
-	case strings.Contains(message.Content, "!q south"):
+	case message.Content == "!q south":
 		quote := getSouthParkQuote(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
 	// Get quote
-	case strings.Contains(message.Content, "!q"):
+	case message.Content == "!q":
 		quote := getQuote(message.Content)
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
 	// Get basic hi
-	case strings.Contains(message.Content, "!help") || strings.Contains(message.Content, "!h"):
+	case message.Content == "!help" || message.Content == "!h":
 		embed := &discordgo.MessageSend{
 			Embeds: []*discordgo.MessageEmbed{{
 				Type:        discordgo.EmbedTypeRich,
@@ -174,6 +177,11 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 					{
 						Name:   "!q south",
 						Value:  "To get a South Park quote.",
+						Inline: true,
+					},
+					{
+						Name:   "!q daily",
+						Value:  "To get a daily quote.",
 						Inline: true,
 					},
 				}}}}
