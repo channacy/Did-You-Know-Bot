@@ -1,12 +1,14 @@
 # Did-You-Know-Bot
 
-- quotes, jokes, puns, memes, facts
-- images of cats/dogs/foxes
-- random 
-- help to display all the available features
-- users can set weekly or biweekly quotes/memes/jokes/facts
+Overview
+- is a Discord bot that sends quotes, facts, and advice
+- users can set daily messages for individual text channels
+- can also get quotes from South Park, Breaking Bad, Game of Thrones, Stranger Things, Luicifer
+- can recieve random cat and dog images
+- `!help` will display all commands
 
-
+Possible Future Features
+- feature to send and schedule weekly messages (Depends if there is a need for this)
 
 
 Resources

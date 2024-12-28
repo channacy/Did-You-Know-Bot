@@ -91,7 +91,7 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 			discord.ChannelMessageSend(message.ChannelID, "Could not set daily message. Example usage: !q daily 5:00.")
 		} else {
 			setServerSchedule(message.GuildID, message.ChannelID, "daily", "quote", words[2], true)
-			discord.ChannelMessageSend(message.ChannelID, "All times will be set based on EST. Message scheduling was succesful.")
+			discord.ChannelMessageSend(message.ChannelID, "All times will be set based on UTC. Message scheduling was succesful.")
 		}
 	// Delete schedule for daily joke
 	case message.Content == "!j daily delete":
@@ -105,7 +105,7 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 			discord.ChannelMessageSend(message.ChannelID, "Could not set daily message. Example usage: !j daily 5:00.")
 		} else {
 			setServerSchedule(message.GuildID, message.ChannelID, "daily", "joke", words[2], true)
-			discord.ChannelMessageSend(message.ChannelID, "All times will be set based on EST. Message scheduling was succesful.")
+			discord.ChannelMessageSend(message.ChannelID, "All times will be set based on UTC. Message scheduling was succesful.")
 		}
 	// Delete schedule for daily advice
 	case message.Content == "!a daily delete":
@@ -119,7 +119,7 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 			discord.ChannelMessageSend(message.ChannelID, "Could not set daily advice. Example usage: !a daily 5:00.")
 		} else {
 			setServerSchedule(message.GuildID, message.ChannelID, "daily", "advice", words[2], true)
-			discord.ChannelMessageSend(message.ChannelID, "All times will be set based on EST. Message scheduling was succesful.")
+			discord.ChannelMessageSend(message.ChannelID, "All times will be set based on UTC. Message scheduling was succesful.")
 		}
 	// Get Breaking Bad Quote
 	case message.Content == "!q bb":
@@ -220,7 +220,7 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 					},
 					{
 						Name:   "!q daily hh:mm",
-						Value:  "To get daily quote.",
+						Value:  "To get daily quotes.",
 						Inline: true,
 					},
 					{
@@ -230,7 +230,7 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 					},
 					{
 						Name:   "!j daily hh:mm",
-						Value:  "To get daily joke.",
+						Value:  "To get daily jokes.",
 						Inline: true,
 					},
 					{
