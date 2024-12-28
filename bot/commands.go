@@ -113,7 +113,7 @@ const southParkQuoteApiUrl string = "http://southparkquotes.onrender.com/v1/quot
 const strangerThingsQuoteApiUrl string = "https://strangerthings-quotes.vercel.app/api/quotes"
 const jokeApiUrl string = "https://official-joke-api.appspot.com/jokes/random"
 
-func getAdvice(message string) *discordgo.MessageSend {
+func getAdvice() *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
 
 	response, err := client.Get(adviceApiUrl)
@@ -225,7 +225,7 @@ func getMathFact(message string) *discordgo.MessageSend {
 
 }
 
-func getQuote(message string) *discordgo.MessageSend {
+func getQuote() *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
 	response, err := client.Get(quoteApiUrl)
 	if err != nil {
@@ -460,7 +460,7 @@ func getSouthParkQuote(message string) *discordgo.MessageSend {
 	return embed
 }
 
-func getJoke(message string) *discordgo.MessageSend {
+func getJoke() *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
 	response, err := client.Get(jokeApiUrl)
 	if err != nil {

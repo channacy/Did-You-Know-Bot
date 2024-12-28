@@ -31,7 +31,7 @@ func Run() {
 		return
 	}
 	defer discord.Close()
-
+	go runScheduler(discord)
 	// Run until code is terminated
 	fmt.Println("Bot running...")
 	c := make(chan os.Signal, 1)
@@ -53,11 +53,11 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	switch {
 	// Get advice
 	case message.Content == "!a":
-		advice := getAdvice(message.Content)
+		advice := getAdvice()
 		discord.ChannelMessageSendComplex(message.ChannelID, advice)
 	// Get advice
 	case message.Content == "!j":
-		joke := getJoke(message.Content)
+		joke := getJoke()
 		discord.ChannelMessageSendComplex(message.ChannelID, joke)
 	// Get Cat Image
 	case message.Content == "!cat pic":
@@ -93,6 +93,34 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 			setServerSchedule(message.GuildID, message.ChannelID, "daily", "quote", words[2], true)
 			discord.ChannelMessageSend(message.ChannelID, "All times will be set based on EST. Message scheduling was succesful.")
 		}
+	// Delete schedule for daily joke
+	case message.Content == "!j daily delete":
+		key := message.ChannelID + "dailyjoke"
+		deleteServerSchedule(key)
+		discord.ChannelMessageSend(message.ChannelID, "Succesfully removed scheduled daily joke.")
+	// Get joke daily
+	case strings.Contains(message.Content, "!j daily"):
+		words := strings.Fields(message.Content)
+		if len(words) < 3 {
+			discord.ChannelMessageSend(message.ChannelID, "Could not set daily message. Example usage: !j daily 5:00.")
+		} else {
+			setServerSchedule(message.GuildID, message.ChannelID, "daily", "joke", words[2], true)
+			discord.ChannelMessageSend(message.ChannelID, "All times will be set based on EST. Message scheduling was succesful.")
+		}
+	// Delete schedule for daily advice
+	case message.Content == "!a daily delete":
+		key := message.ChannelID + "dailyadvice"
+		deleteServerSchedule(key)
+		discord.ChannelMessageSend(message.ChannelID, "Succesfully removed scheduled daily advice.")
+	// Get advice daily
+	case strings.Contains(message.Content, "!a daily"):
+		words := strings.Fields(message.Content)
+		if len(words) < 3 {
+			discord.ChannelMessageSend(message.ChannelID, "Could not set daily advice. Example usage: !a daily 5:00.")
+		} else {
+			setServerSchedule(message.GuildID, message.ChannelID, "daily", "advice", words[2], true)
+			discord.ChannelMessageSend(message.ChannelID, "All times will be set based on EST. Message scheduling was succesful.")
+		}
 	// Get Breaking Bad Quote
 	case message.Content == "!q bb":
 		quote := getBreakingBadQuote(message.Content)
@@ -115,7 +143,7 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
 	// Get quote
 	case message.Content == "!q":
-		quote := getQuote(message.Content)
+		quote := getQuote()
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
 	// Get basic hi
 	case message.Content == "!help" || message.Content == "!h":
@@ -191,8 +219,33 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 						Inline: true,
 					},
 					{
-						Name:   "!q daily",
-						Value:  "To get a daily quote.",
+						Name:   "!q daily hh:mm",
+						Value:  "To get daily quote.",
+						Inline: true,
+					},
+					{
+						Name:   "!a daily hh:mm",
+						Value:  "To get daily advice.",
+						Inline: true,
+					},
+					{
+						Name:   "!j daily hh:mm",
+						Value:  "To get daily joke.",
+						Inline: true,
+					},
+					{
+						Name:   "!q daily delete",
+						Value:  "To remove daily quote schedule.",
+						Inline: true,
+					},
+					{
+						Name:   "!a daily delete",
+						Value:  "To remove daily advice schedule.",
+						Inline: true,
+					},
+					{
+						Name:   "!j daily delete",
+						Value:  "To remove daily joke schedule.",
 						Inline: true,
 					},
 				}}}}
