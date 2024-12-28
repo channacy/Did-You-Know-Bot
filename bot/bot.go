@@ -61,23 +61,23 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 		discord.ChannelMessageSendComplex(message.ChannelID, joke)
 	// Get Cat Image
 	case message.Content == "!cat pic":
-		catImg := getCatImg(message.Content)
+		catImg := getCatImg()
 		discord.ChannelMessageSendComplex(message.ChannelID, catImg)
 	// Get cat fact
 	case message.Content == "!cat":
-		catFact := getCatFact(message.Content)
+		catFact := getCatFact()
 		discord.ChannelMessageSendComplex(message.ChannelID, catFact)
 	// Get dog picture
 	case message.Content == "!dog pic":
-		dogImg := getDogImg(message.Content)
+		dogImg := getDogImg()
 		discord.ChannelMessageSendComplex(message.ChannelID, dogImg)
 	// Get dog fact
 	case message.Content == "!dog":
-		dogFact := getDogFact(message.Content)
+		dogFact := getDogFact()
 		discord.ChannelMessageSendComplex(message.ChannelID, dogFact)
 	// Get math fact
 	case message.Content == "!math":
-		mathFact := getMathFact(message.Content)
+		mathFact := getMathFact()
 		discord.ChannelMessageSendComplex(message.ChannelID, mathFact)
 		// Delete schedule for daily quote
 	case message.Content == "!q daily delete":
@@ -123,23 +123,23 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 		}
 	// Get Breaking Bad Quote
 	case message.Content == "!q bb":
-		quote := getBreakingBadQuote(message.Content)
+		quote := getBreakingBadQuote()
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
 	// Get Game of Thrones quote
 	case message.Content == "!q got":
-		quote := getGameOfThronesQuote(message.Content)
+		quote := getGameOfThronesQuote()
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
 	// Get Lucifier quote
 	case message.Content == "!q lucifier":
-		quote := getLucifierQuote(message.Content)
+		quote := getLucifierQuote()
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
 	// Get Stranger Things quote
 	case message.Content == "!q stranger":
-		quote := getStrangerThingsQuote(message.Content)
+		quote := getStrangerThingsQuote()
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
 	// Get South Park quote
 	case message.Content == "!q south":
-		quote := getSouthParkQuote(message.Content)
+		quote := getSouthParkQuote()
 		discord.ChannelMessageSendComplex(message.ChannelID, quote)
 	// Get quote
 	case message.Content == "!q":

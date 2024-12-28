@@ -141,7 +141,7 @@ func getAdvice() *discordgo.MessageSend {
 	return embed
 }
 
-func getCatFact(message string) *discordgo.MessageSend {
+func getCatFact() *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
 	response, err := client.Get(catFactApiUrl)
 	if err != nil {
@@ -169,7 +169,7 @@ func getCatFact(message string) *discordgo.MessageSend {
 
 }
 
-func getDogFact(message string) *discordgo.MessageSend {
+func getDogFact() *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
 	response, err := client.Get(dogFactApiUrl)
 	if err != nil {
@@ -202,7 +202,7 @@ func getDogFact(message string) *discordgo.MessageSend {
 
 }
 
-func getMathFact(message string) *discordgo.MessageSend {
+func getMathFact() *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
 	response, err := client.Get(mathFactApiUrl)
 	if err != nil {
@@ -261,7 +261,7 @@ func getQuote() *discordgo.MessageSend {
 
 }
 
-func getDogImg(message string) *discordgo.MessageSend {
+func getDogImg() *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
 	response, err := client.Get(dogImgApiUrl)
 	if err != nil {
@@ -290,7 +290,7 @@ func getDogImg(message string) *discordgo.MessageSend {
 	return embed
 }
 
-func getBreakingBadQuote(message string) *discordgo.MessageSend {
+func getBreakingBadQuote() *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
 	response, err := client.Get(breakingBadQuoteApiUrl)
 	if err != nil {
@@ -324,7 +324,7 @@ func getBreakingBadQuote(message string) *discordgo.MessageSend {
 	return embed
 }
 
-func getGameOfThronesQuote(message string) *discordgo.MessageSend {
+func getGameOfThronesQuote() *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
 	response, err := client.Get(gameOfThronesQuoteApiUrl)
 	if err != nil {
@@ -358,7 +358,7 @@ func getGameOfThronesQuote(message string) *discordgo.MessageSend {
 	return embed
 }
 
-func getLucifierQuote(message string) *discordgo.MessageSend {
+func getLucifierQuote() *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
 	response, err := client.Get(luciferQuoteApiUrl)
 	if err != nil {
@@ -392,7 +392,7 @@ func getLucifierQuote(message string) *discordgo.MessageSend {
 	return embed
 }
 
-func getStrangerThingsQuote(message string) *discordgo.MessageSend {
+func getStrangerThingsQuote() *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
 	response, err := client.Get(strangerThingsQuoteApiUrl)
 	if err != nil {
@@ -426,7 +426,7 @@ func getStrangerThingsQuote(message string) *discordgo.MessageSend {
 	return embed
 }
 
-func getSouthParkQuote(message string) *discordgo.MessageSend {
+func getSouthParkQuote() *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
 	response, err := client.Get(southParkQuoteApiUrl)
 	if err != nil {
@@ -494,7 +494,7 @@ func getJoke() *discordgo.MessageSend {
 	return embed
 }
 
-func getCatImg(message string) *discordgo.MessageSend {
+func getCatImg() *discordgo.MessageSend {
 	client := http.Client{Timeout: 5 * time.Second}
 	response, err := client.Get(catImgApiUrl)
 	if err != nil {
